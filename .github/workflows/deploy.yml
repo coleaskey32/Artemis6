@@ -23,15 +23,14 @@ jobs:
       # Step 3: SSH into Jetson and run commands
       - name: Deploy to Jetson
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} << 'EOF'
-            cd ~/Artemis6 || exit
-            # optional: pull latest code (if using git on Jetson)
-            git pull origin main
-            # activate your ROS2 virtual environment
+          ssh -o StrictHostKeyChecking=no ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} "
+            mkdir -p ~/Artemis6
+            cd ~/Artemis6
+            git init || true
+            git remote add origin git@github.com:coleaskey32/Artemis6.git || true
+            git fetch origin
+            git reset --hard origin/main
             source ~/ros_env/bin/activate
-            # build workspace if needed
             colcon build
-            # optionally run your main ROS2 launch file
-            # ros2 launch src/your_package your_launch_file.launch.py
             echo 'Deployment complete!'
-          EOF
+          "
