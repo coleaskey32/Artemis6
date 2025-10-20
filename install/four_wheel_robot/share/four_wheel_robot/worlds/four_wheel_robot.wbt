@@ -1,0 +1,475 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/Floor.proto"
+
+WorldInfo {
+  title "Four Wheel Robot Practice"
+  basicTimeStep 16
+  contactProperties [
+    ContactProperties {
+      material1 "floor"
+      material2 "wheel"
+      coulombFriction [
+        0.8
+      ]
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.5 0.5 0.7071 2.0944
+  position 0 0 3
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+  size 10 10
+  contactMaterial "floor"
+}
+Robot {
+  translation 0 0 0.1
+  children [
+    # Robot body
+    DEF BODY Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.4 0.8
+        metalness 0
+        roughness 0.5
+      }
+      geometry Box {
+        size 0.4 0.3 0.1
+      }
+    }
+    # ============================================
+    # 6-AXIS ROBOTIC ARM
+    # ============================================
+    # Joint 1: Base Rotation (around Z-axis)
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        axis 0 0 1
+        anchor 0 0 0.05
+        minStop -3.14159
+        maxStop 3.14159
+      }
+      device [
+        RotationalMotor {
+          name "arm_joint_1"
+          maxVelocity 2.0
+          minPosition -3.14159
+          maxPosition 3.14159
+        }
+        PositionSensor {
+          name "arm_sensor_1"
+        }
+      ]
+      endPoint Solid {
+        translation 0 0 0.05
+        children [
+          # Base mounting plate
+          DEF ARM_BASE Shape {
+            appearance PBRAppearance {
+              baseColor 0.3 0.3 0.3
+              metalness 0.8
+              roughness 0.3
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.06
+            }
+          }
+          # Joint 2: Shoulder (around Y-axis)
+          HingeJoint {
+            jointParameters HingeJointParameters {
+              position 0
+              axis 0 1 0
+              anchor 0 0 0.04
+              minStop -1.5708
+              maxStop 1.5708
+            }
+            device [
+              RotationalMotor {
+                name "arm_joint_2"
+                maxVelocity 2.0
+                minPosition -1.5708
+                maxPosition 1.5708
+              }
+              PositionSensor {
+                name "arm_sensor_2"
+              }
+            ]
+            endPoint Solid {
+              translation 0 0 0.04
+              children [
+                # Upper arm link
+                DEF ARM_LINK_1 Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.8 0.3 0.2
+                    metalness 0.3
+                    roughness 0.5
+                  }
+                  geometry Box {
+                    size 0.05 0.05 0.25
+                  }
+                }
+                # Joint 3: Elbow (around Y-axis)
+                HingeJoint {
+                  jointParameters HingeJointParameters {
+                    position 0
+                    axis 0 1 0
+                    anchor 0 0 0.125
+                    minStop -2.618
+                    maxStop 2.618
+                  }
+                  device [
+                    RotationalMotor {
+                      name "arm_joint_3"
+                      maxVelocity 2.0
+                      minPosition -2.618
+                      maxPosition 2.618
+                    }
+                    PositionSensor {
+                      name "arm_sensor_3"
+                    }
+                  ]
+                  endPoint Solid {
+                    translation 0 0 0.125
+                    children [
+                      # Forearm link
+                      DEF ARM_LINK_2 Shape {
+                        appearance PBRAppearance {
+                          baseColor 0.8 0.5 0.2
+                          metalness 0.3
+                          roughness 0.5
+                        }
+                        geometry Box {
+                          size 0.04 0.04 0.2
+                        }
+                      }
+                      # Joint 4: Wrist Roll (around Z-axis)
+                      HingeJoint {
+                        jointParameters HingeJointParameters {
+                          position 0
+                          axis 0 0 1
+                          anchor 0 0 0.1
+                          minStop -3.14159
+                          maxStop 3.14159
+                        }
+                        device [
+                          RotationalMotor {
+                            name "arm_joint_4"
+                            maxVelocity 3.0
+                            minPosition -3.14159
+                            maxPosition 3.14159
+                          }
+                          PositionSensor {
+                            name "arm_sensor_4"
+                          }
+                        ]
+                        endPoint Solid {
+                          translation 0 0 0.1
+                          children [
+                            # Wrist section
+                            DEF WRIST_LINK Shape {
+                              appearance PBRAppearance {
+                                baseColor 0.4 0.4 0.4
+                                metalness 0.8
+                                roughness 0.3
+                              }
+                              geometry Cylinder {
+                                height 0.06
+                                radius 0.025
+                              }
+                            }
+                            # Joint 5: Wrist Pitch (around Y-axis)
+                            HingeJoint {
+                              jointParameters HingeJointParameters {
+                                position 0
+                                axis 0 1 0
+                                anchor 0 0 0.03
+                                minStop -1.5708
+                                maxStop 1.5708
+                              }
+                              device [
+                                RotationalMotor {
+                                  name "arm_joint_5"
+                                  maxVelocity 3.0
+                                  minPosition -1.5708
+                                  maxPosition 1.5708
+                                }
+                                PositionSensor {
+                                  name "arm_sensor_5"
+                                }
+                              ]
+                              endPoint Solid {
+                                translation 0 0 0.03
+                                children [
+                                  # Wrist pitch link
+                                  DEF WRIST_PITCH Shape {
+                                    appearance PBRAppearance {
+                                      baseColor 0.5 0.5 0.5
+                                      metalness 0.7
+                                      roughness 0.3
+                                    }
+                                    geometry Box {
+                                      size 0.03 0.03 0.04
+                                    }
+                                  }
+                                  # Joint 6: Wrist Yaw (around Z-axis)
+                                  HingeJoint {
+                                    jointParameters HingeJointParameters {
+                                      position 0
+                                      axis 0 0 1
+                                      anchor 0 0 0.02
+                                      minStop -3.14159
+                                      maxStop 3.14159
+                                    }
+                                    device [
+                                      RotationalMotor {
+                                        name "arm_joint_6"
+                                        maxVelocity 3.0
+                                        minPosition -3.14159
+                                        maxPosition 3.14159
+                                      }
+                                      PositionSensor {
+                                        name "arm_sensor_6"
+                                      }
+                                    ]
+                                    endPoint Solid {
+                                      translation 0 0 0.02
+                                      children [
+                                        # End effector mounting plate
+                                        DEF END_EFFECTOR_MOUNT Shape {
+                                          appearance PBRAppearance {
+                                            baseColor 0.6 0.6 0.6
+                                            metalness 0.8
+                                            roughness 0.2
+                                          }
+                                          geometry Cylinder {
+                                            height 0.02
+                                            radius 0.03
+                                          }
+                                        }
+                                        # Simple Gripper - Left Finger
+                                        Solid {
+                                          translation 0.02 0 0.01
+                                          children [
+                                            DEF GRIPPER_FINGER Shape {
+                                              appearance PBRAppearance {
+                                                baseColor 0.2 0.8 0.2
+                                                metalness 0.5
+                                                roughness 0.4
+                                              }
+                                              geometry Box {
+                                                size 0.01 0.03 0.06
+                                              }
+                                            }
+                                          ]
+                                          name "gripper_left"
+                                          boundingObject USE GRIPPER_FINGER
+                                          physics Physics {
+                                            density -1
+                                            mass 0.01
+                                          }
+                                        }
+                                        # Simple Gripper - Right Finger
+                                        Solid {
+                                          translation -0.02 0 0.01
+                                          children [
+                                            USE GRIPPER_FINGER
+                                          ]
+                                          name "gripper_right"
+                                          boundingObject USE GRIPPER_FINGER
+                                          physics Physics {
+                                            density -1
+                                            mass 0.01
+                                          }
+                                        }
+                                      ]
+                                      name "wrist_yaw_link"
+                                      boundingObject USE END_EFFECTOR_MOUNT
+                                      physics Physics {
+                                        density -1
+                                        mass 0.05
+                                      }
+                                    }
+                                  }
+                                ]
+                                name "wrist_pitch_link"
+                                boundingObject USE WRIST_PITCH
+                                physics Physics {
+                                  density -1
+                                  mass 0.08
+                                }
+                              }
+                            }
+                          ]
+                          name "wrist_roll_link"
+                          boundingObject USE WRIST_LINK
+                          physics Physics {
+                            density -1
+                            mass 0.1
+                          }
+                        }
+                      }
+                    ]
+                    name "forearm_link"
+                    boundingObject USE ARM_LINK_2
+                    physics Physics {
+                      density -1
+                      mass 0.3
+                    }
+                  }
+                }
+              ]
+              name "upper_arm_link"
+              boundingObject USE ARM_LINK_1
+              physics Physics {
+                density -1
+                mass 0.5
+              }
+            }
+          }
+        ]
+        name "arm_base_link"
+        boundingObject USE ARM_BASE
+        physics Physics {
+          density -1
+          mass 0.4
+        }
+      }
+    }
+    # Front Left Wheel
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        anchor 0.15 0.2 0
+        axis 0 1 0
+      }
+      device [
+        RotationalMotor {
+          name "front_left_wheel"
+          maxVelocity 10
+        }
+      ]
+      endPoint Solid {
+        translation 0.15 0.2 0
+        rotation 1 0 0 1.5708
+        children [
+          DEF WHEEL Shape {
+            appearance PBRAppearance {
+              baseColor 0.1 0.1 0.1
+              metalness 0
+              roughness 1
+            }
+            geometry Cylinder {
+              height 0.05
+              radius 0.08
+            }
+          }
+        ]
+        contactMaterial "wheel"
+        boundingObject USE WHEEL
+        physics Physics {
+          density -1
+          mass 0.5
+        }
+      }
+    }
+    # Front Right Wheel
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        anchor 0.15 -0.2 0
+        axis 0 1 0
+      }
+      device [
+        RotationalMotor {
+          name "front_right_wheel"
+          maxVelocity 10
+        }
+      ]
+      endPoint Solid {
+        translation 0.15 -0.2 0
+        rotation 1 0 0 1.5708
+        children [
+          USE WHEEL
+        ]
+        name "front_right_wheel"
+        contactMaterial "wheel"
+        boundingObject USE WHEEL
+        physics Physics {
+          density -1
+          mass 0.5
+        }
+      }
+    }
+    # Rear Left Wheel
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        anchor -0.15 0.2 0
+        axis 0 1 0
+      }
+      device [
+        RotationalMotor {
+          name "rear_left_wheel"
+          maxVelocity 10
+        }
+      ]
+      endPoint Solid {
+        translation -0.15 0.2 0
+        rotation 1 0 0 1.5708
+        children [
+          USE WHEEL
+        ]
+        name "rear_left_wheel"
+        contactMaterial "wheel"
+        boundingObject USE WHEEL
+        physics Physics {
+          density -1
+          mass 0.5
+        }
+      }
+    }
+    # Rear Right Wheel
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0
+        anchor -0.15 -0.2 0
+        axis 0 1 0
+      }
+      device [
+        RotationalMotor {
+          name "rear_right_wheel"
+          maxVelocity 10
+        }
+      ]
+      endPoint Solid {
+        translation -0.15 -0.2 0
+        rotation 1 0 0 1.5708
+        children [
+          USE WHEEL
+        ]
+        name "rear_right_wheel"
+        contactMaterial "wheel"
+        boundingObject USE WHEEL
+        physics Physics {
+          density -1
+          mass 0.5
+        }
+      }
+    }
+  ]
+  name "four_wheel_robot"
+  boundingObject USE BODY
+  physics Physics {
+    density -1
+    mass 5
+  }
+  controller "four_wheel_controller"
+}
+

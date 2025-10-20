@@ -1,0 +1,36 @@
+-- Found ament_cmake: 1.3.3 (/opt/anaconda3/envs/ros_env/share/ament_cmake/cmake)
+-- Found Python3: /opt/anaconda3/envs/ros_env/bin/python3 (found version "3.10.13") found components: Interpreter 
+-- Found ament_lint_auto: 0.12.5 (/opt/anaconda3/envs/ros_env/share/ament_lint_auto/cmake)
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/coleaskey/ros2_ws/build/four_wheel_robot
+-- Install configuration: ""
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot//worlds
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot//worlds/.four_wheel_robot.wbproj
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot//worlds/four_wheel_robot.wbt
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot//controllers
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot//controllers/four_wheel_controller
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot//controllers/four_wheel_controller/four_wheel_controller.py
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot//controllers/four_wheel_controller/four_wheel_controller
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/lib/four_wheel_robot/ros2_bridge
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/controllers/four_wheel_controller/four_wheel_controller
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/controllers/four_wheel_controller/four_wheel_controller.py
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/ament_index/resource_index/package_run_dependencies/four_wheel_robot
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/ament_index/resource_index/parent_prefix_path/four_wheel_robot
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/environment/ament_prefix_path.sh
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/environment/ament_prefix_path.dsv
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/environment/path.sh
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/environment/path.dsv
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/local_setup.bash
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/local_setup.sh
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/local_setup.zsh
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/local_setup.dsv
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/package.dsv
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/ament_index/resource_index/packages/four_wheel_robot
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/cmake/four_wheel_robotConfig.cmake
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/cmake/four_wheel_robotConfig-version.cmake
+-- Installing: /Users/coleaskey/ros2_ws/install/four_wheel_robot/share/four_wheel_robot/package.xml

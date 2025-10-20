@@ -1,0 +1,37 @@
+name: Deploy to Jetson
+
+on:
+  push:
+    branches:
+      - main  # change if using a different branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Start the SSH agent and add the private key
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.JETSON_SSH_KEY }}
+
+      # Step 3: SSH into Jetson and run commands
+      - name: Deploy to Jetson
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} "
+            cd ~/Artemis6 || exit
+            # optional: pull latest code (if using git on Jetson)
+            git pull origin main
+            # activate your ROS2 virtual environment
+            source ~/ros_env/bin/activate
+            # build workspace if needed
+            colcon build
+            # optionally run your main ROS2 launch file
+            # ros2 launch src/your_package your_launch_file.launch.py
+            echo 'Deployment complete!'
+          "

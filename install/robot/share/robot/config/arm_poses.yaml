@@ -1,0 +1,48 @@
+# Arm Pose Library
+# All joint positions in radians
+# Format: [J1, J2, J3, J4, J5, J6]
+
+home:
+  position: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  description: "Upright home position"
+
+reach_forward:
+  position: [0.0, 0.8, -1.2, 0.0, 0.8, 0.0]
+  description: "Reach straight forward"
+
+reach_side_left:
+  position: [1.57, 0.5, -0.8, 0.0, 0.3, 0.0]
+  description: "Reach to left side (90°)"
+
+reach_side_right:
+  position: [-1.57, 0.5, -0.8, 0.0, 0.3, 0.0]
+  description: "Reach to right side (-90°)"
+
+ready_to_pick:
+  position: [0.0, 1.0, -1.5, 0.0, 0.5, 0.0]
+  description: "Ready to pick up object in front"
+
+stow:
+  position: [0.0, -0.3, 0.5, 0.0, -0.2, 0.0]
+  description: "Stowed position (compact)"
+
+wave:
+  position: [0.0, 0.5, -0.8, 0.0, 1.2, 0.0]
+  description: "Waving position"
+
+look_left:
+  position: [1.57, 0.3, -0.5, 0.0, 0.2, 0.0]
+  description: "Point gripper to left"
+
+look_right:
+  position: [-1.57, 0.3, -0.5, 0.0, 0.2, 0.0]
+  description: "Point gripper to right"
+
+reach_high:
+  position: [0.0, 0.3, -0.3, 0.0, 0.0, 0.0]
+  description: "Reach upward"
+
+reach_low:
+  position: [0.0, 1.3, -0.8, 0.0, 0.5, 0.0]
+  description: "Reach downward/forward"
+

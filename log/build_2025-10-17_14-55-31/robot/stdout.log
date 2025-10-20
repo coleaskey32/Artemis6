@@ -1,0 +1,51 @@
+-- Found ament_cmake: 1.3.3 (/opt/anaconda3/envs/ros_env/share/ament_cmake/cmake)
+-- Found ament_lint_auto: 0.12.5 (/opt/anaconda3/envs/ros_env/share/ament_lint_auto/cmake)
+-- Added test 'flake8' to check Python code syntax and style conventions
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/coleaskey/ros2_ws/build/robot
+-- Install configuration: ""
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot//launch
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot//launch/robot_bringup.launch.py
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot//config
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot//config/arm_poses.yaml
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot//worlds
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot//worlds/robot.wbt
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot//worlds/world.wbt
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot//urdf
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot//urdf/robot.urdf
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot//protos
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot//protos/MobileManipulator_textures
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot//protos/MobileManipulator.proto
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot//controllers
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot//controllers/robot_controller
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot//controllers/robot_controller/robot_controller.py
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot//controllers/robot_controller/robot_controller
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/lib/robot/base_controller
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/lib/robot/square_drive
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/lib/robot/arm_controller
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/lib/robot/pose_controller
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/lib/robot/joint_state_publisher
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/lib/robot/arm_teleop
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/lib/robot/ik_solver
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/lib/robot/pick_demo
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/controllers/robot_controller/robot_controller
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/controllers/robot_controller/robot_controller.py
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/ament_index/resource_index/package_run_dependencies/robot
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/ament_index/resource_index/parent_prefix_path/robot
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/environment/ament_prefix_path.sh
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot/environment/ament_prefix_path.dsv
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/environment/path.sh
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot/environment/path.dsv
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/local_setup.bash
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/local_setup.sh
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/local_setup.zsh
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot/local_setup.dsv
+-- Installing: /Users/coleaskey/ros2_ws/install/robot/share/robot/package.dsv
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/ament_index/resource_index/packages/robot
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/cmake/robotConfig.cmake
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/cmake/robotConfig-version.cmake
+-- Up-to-date: /Users/coleaskey/ros2_ws/install/robot/share/robot/package.xml
