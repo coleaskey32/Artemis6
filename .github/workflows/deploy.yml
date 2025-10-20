@@ -1,4 +1,4 @@
-name: Deploy to Jetson/RPi
+name: Bootstrap and Deploy to Jetson
 
 on:
   push:
@@ -6,65 +6,71 @@ on:
       - main
 
 jobs:
-  setup-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      # Step 1: Checkout your repository
+      # Step 1: Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Start SSH agent and add private key
+      # Step 2: Set up SSH
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.JETSON_SSH_KEY }}
 
-      # Step 3: Bootstrap remote machine (Jetson/RPi)
+      # Step 3: Bootstrap and deploy on Jetson
       - name: Bootstrap and deploy
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} "
-            echo 'Starting deployment...'
+          ssh -tt -o StrictHostKeyChecking=no ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} << 'EOF'
+            echo "Starting deployment..."
 
-            # 1️⃣ Update and install basics
-            sudo apt update && sudo apt install -y curl git lsb-release gnupg2 python3-venv python3-pip build-essential
+            # Update packages
+            sudo apt update -y
+            sudo apt upgrade -y
 
-            # 2️⃣ Install ROS2 Humble if not installed
+            # Install prerequisites
+            sudo apt install -y python3-venv python3-pip git wget lsb-release curl gnupg2
+
+            # Install colcon if not present
+            if ! command -v colcon &> /dev/null; then
+              sudo apt install -y python3-colcon-common-extensions
+            fi
+
+            # Install ROS 2 Humble if not installed
             if [ ! -f /opt/ros/humble/setup.bash ]; then
               sudo apt update && sudo apt install -y software-properties-common
               sudo add-apt-repository universe
               sudo apt update && sudo apt install -y curl gnupg2 lsb-release
               sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
-              sudo sh -c 'echo \"deb http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main\" > /etc/apt/sources.list.d/ros2-latest.list'
+              sudo sh -c 'echo "deb http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2.list'
               sudo apt update
-              sudo apt install -y ros-humble-desktop python3-colcon-common-extensions
+              sudo apt install -y ros-humble-desktop
             fi
 
-            # Source ROS2
-            source /opt/ros/humble/setup.bash
-
-            # 3️⃣ Create Python virtual environment if missing
+            # Create ROS2 virtual environment
             if [ ! -d ~/ros_env ]; then
               python3 -m venv ~/ros_env
             fi
+
+            # Activate virtual environment and install colcon
             source ~/ros_env/bin/activate
+            pip install -U pip
+            pip install -U setuptools colcon-common-extensions
 
-            # 4️⃣ Install Python dependencies if requirements.txt exists
-            if [ -f ~/Artemis6/requirements.txt ]; then
-              pip install --upgrade pip
-              pip install -r ~/Artemis6/requirements.txt
+            # Clone or update repository
+            if [ ! -d ~/Artemis6 ]; then
+              git clone https://github.com/coleaskey32/Artemis6.git ~/Artemis6
+            else
+              cd ~/Artemis6
+              git reset --hard
+              git pull origin main
             fi
 
-            # 5️⃣ Clone repository if missing
-            if [ ! -d ~/Artemis6/.git ]; then
-              git clone git@github.com:coleaskey32/Artemis6.git ~/Artemis6
-            fi
-
-            # 6️⃣ Pull latest code
+            # Build ROS2 workspace
             cd ~/Artemis6
-            git pull origin main
-
-            # 7️⃣ Build ROS2 workspace
             colcon build
 
-            echo 'Deployment complete!'
-          "
+            echo "Deployment complete!"
+          EOF
