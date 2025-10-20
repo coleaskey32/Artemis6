@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
+      # Step 1: Checkout repository (optional, mainly for GitHub Actions workflow)
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Set up SSH agent
+      # Step 2: Set up SSH to Jetson
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -23,7 +23,7 @@ jobs:
       # Step 3: Bootstrap Jetson - install prerequisites & ROS2
       - name: Bootstrap Jetson
         run: |
-          ssh -A -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=5 ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=5 ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} << 'EOF'
             echo "Starting bootstrap..."
 
             # Update and upgrade
@@ -32,7 +32,7 @@ jobs:
             # Install basic dependencies
             sudo apt install -y python3-venv python3-pip git wget lsb-release curl gnupg2 software-properties-common
 
-            # Install ROS2 Humble if missing
+            # Install ROS2 Humble if not installed
             if [ ! -f /opt/ros/humble/setup.bash ]; then
               sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
               sudo sh -c 'echo "deb http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2.list'
@@ -51,30 +51,27 @@ jobs:
       # Step 4: Deploy repository and build ROS2 workspace
       - name: Deploy to Jetson
         run: |
-          ssh -A -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=5 ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=5 ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} << 'EOF'
             echo "Starting deployment..."
 
-            # Ensure .local/bin is in PATH for pip-installed tools
-            export PATH=$HOME/.local/bin:$PATH
-
             # Activate ROS2 virtual environment
-            if [ -d ~/ros_env ]; then
-              source ~/ros_env/bin/activate
-            fi
+            source ~/ros_env/bin/activate
+            pip install -U pip setuptools colcon-common-extensions
 
-            pip install --user -U pip setuptools colcon-common-extensions
-
-            # Clone or update repository via SSH using forwarded agent
+            # Clone or update repository via HTTPS (public repo)
             if [ ! -d ~/Artemis6 ]; then
-              git clone git@github.com:coleaskey32/Artemis6.git ~/Artemis6
+              git clone https://github.com/coleaskey32/Artemis6.git ~/Artemis6
             else
               cd ~/Artemis6
               git reset --hard
               git pull origin main
             fi
 
-            # Build ROS2 workspace
+            # Ensure src folder exists (ROS2 workspace structure)
             cd ~/Artemis6
+            mkdir -p src
+
+            # Build ROS2 workspace
             colcon build
 
             echo "Deployment complete!"

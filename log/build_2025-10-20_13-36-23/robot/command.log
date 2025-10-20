@@ -1,0 +1,2 @@
+Invoking command in '/Users/coleaskey/Artemis6/build/robot': SHLVL=2 _=/usr/bin/env /opt/homebrew/bin/cmake /Users/coleaskey/Artemis6/src/robot -DCMAKE_INSTALL_PREFIX=/Users/coleaskey/Artemis6/install/robot
+Invoked command in '/Users/coleaskey/Artemis6/build/robot' returned '1': SHLVL=2 _=/usr/bin/env /opt/homebrew/bin/cmake /Users/coleaskey/Artemis6/src/robot -DCMAKE_INSTALL_PREFIX=/Users/coleaskey/Artemis6/install/robot
