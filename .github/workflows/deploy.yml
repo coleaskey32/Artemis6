@@ -24,28 +24,45 @@ jobs:
       - name: Bootstrap Jetson
         run: |
           ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=5 ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} << 'EOF'
-            echo "Starting bootstrap..."
+            set -e  # Exit on error
+            echo "🚀 Starting bootstrap..."
 
-            # Update and upgrade
-            sudo apt update -y && sudo apt upgrade -y
+            # Set non-interactive mode to prevent prompts
+            export DEBIAN_FRONTEND=noninteractive
 
-            # Install basic dependencies
-            sudo apt install -y python3-venv python3-pip git wget lsb-release curl gnupg2 software-properties-common
+            # Update package list
+            echo "📦 Updating package list..."
+            sudo apt update -y
+
+            # Install basic dependencies (skip upgrade to save time)
+            echo "📦 Installing basic dependencies..."
+            sudo apt install -y python3-pip git wget lsb-release curl gnupg2 software-properties-common
 
             # Install ROS2 Humble if not installed
             if [ ! -f /opt/ros/humble/setup.bash ]; then
-              sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
-              sudo sh -c 'echo "deb http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2.list'
-              sudo apt update
-              sudo apt install -y ros-humble-desktop
+              echo "🤖 Installing ROS2 Humble..."
+              
+              # Add ROS2 repository using modern method (not apt-key)
+              sudo mkdir -p /etc/apt/keyrings
+              sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc -o /etc/apt/keyrings/ros-archive-keyring.gpg
+              echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+              
+              sudo apt update -y
+              
+              # Install ROS2 base + required message packages
+              echo "⏳ Installing ROS2 (this may take 10-15 minutes)..."
+              sudo apt install -y ros-humble-ros-base ros-humble-geometry-msgs ros-humble-sensor-msgs ros-humble-std-msgs
+              
+              echo "✅ ROS2 Humble installed!"
+            else
+              echo "✅ ROS2 Humble already installed, skipping..."
             fi
 
-            # Create Python virtual environment if missing
-            if [ ! -d ~/ros_env ]; then
-              python3 -m venv ~/ros_env
-            fi
+            # Install Python build tools
+            echo "🐍 Installing Python build tools..."
+            pip3 install --user --upgrade pip setuptools wheel
 
-            echo "Bootstrap complete!"
+            echo "✅ Bootstrap complete!"
           EOF
 
       # Step 4: Deploy repository and build ROS2 workspace
@@ -55,9 +72,11 @@ jobs:
             set -e  # Exit on error
             echo "🚀 Starting deployment..."
 
-            # Activate ROS2 virtual environment
-            source ~/ros_env/bin/activate
-            pip install -U pip setuptools colcon-common-extensions
+            # Install colcon if not present
+            if ! command -v colcon &> /dev/null; then
+              echo "📦 Installing colcon..."
+              pip3 install --user colcon-common-extensions
+            fi
 
             # Clone or update repository via HTTPS (public repo)
             if [ ! -d ~/Artemis6 ]; then
@@ -81,14 +100,21 @@ jobs:
             mkdir -p src
 
             # Source ROS2 environment
-            source /opt/ros/humble/setup.bash
+            if [ -f /opt/ros/humble/setup.bash ]; then
+              echo "🤖 Sourcing ROS2 Humble..."
+              source /opt/ros/humble/setup.bash
+            else
+              echo "⚠️  ROS2 Humble not found, continuing anyway..."
+            fi
 
             # Install Python dependencies
             echo "📦 Installing Python dependencies..."
-            pip install -r requirements.txt || echo "⚠️  No requirements.txt or install failed"
+            pip3 install --user -r requirements.txt || echo "⚠️  Some dependencies failed to install"
 
             # Build ROS2 workspace
             echo "🔨 Building ROS2 workspace..."
+            # Add ~/.local/bin to PATH for colcon
+            export PATH="$HOME/.local/bin:$PATH"
             colcon build
 
             echo "✅ Deployment complete!"
