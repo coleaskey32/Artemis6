@@ -1,0 +1,38 @@
+# Python Dependencies for Artemis6 Mobile Manipulator Robot
+# Install with: pip install -r requirements.txt
+
+# ============================================
+# GPIO Control (Jetson Orin Nano)
+# ============================================
+Jetson.GPIO>=2.1.0
+
+# ============================================
+# Inverse Kinematics
+# ============================================
+numpy>=1.21.0
+ikpy>=3.3.0
+
+# ============================================
+# Configuration & Data
+# ============================================
+PyYAML>=6.0
+
+# ============================================
+# ROS2 Dependencies
+# ============================================
+# Note: ROS2 packages (rclpy, geometry_msgs, sensor_msgs, etc.)
+# should be installed via ROS2 distribution, not pip.
+# These are declared in src/robot/package.xml
+
+# If using conda environment, install ROS2 packages with:
+#   conda install -c robostack-staging ros-humble-rclpy
+#   conda install -c robostack-staging ros-humble-geometry-msgs
+#   conda install -c robostack-staging ros-humble-sensor-msgs
+#   conda install -c robostack-staging ros-humble-ament-index-python
+
+# ============================================
+# Optional: Development Tools
+# ============================================
+# matplotlib>=3.5.0  # For visualization/debugging
+# scipy>=1.7.0       # For advanced math operations
+
