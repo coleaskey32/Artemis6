@@ -52,7 +52,8 @@ jobs:
       - name: Deploy to Jetson
         run: |
           ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -o ServerAliveCountMax=5 ${{ secrets.JETSON_USER }}@${{ secrets.JETSON_HOST }} << 'EOF'
-            echo "Starting deployment..."
+            set -e  # Exit on error
+            echo "🚀 Starting deployment..."
 
             # Activate ROS2 virtual environment
             source ~/ros_env/bin/activate
@@ -60,19 +61,35 @@ jobs:
 
             # Clone or update repository via HTTPS (public repo)
             if [ ! -d ~/Artemis6 ]; then
+              echo "📥 Cloning repository..."
               git clone https://github.com/coleaskey32/Artemis6.git ~/Artemis6
             else
+              echo "🔄 Updating repository..."
               cd ~/Artemis6
               git reset --hard
               git pull origin main
             fi
 
-            # Ensure src folder exists (ROS2 workspace structure)
+            # Navigate to workspace
             cd ~/Artemis6
+
+            # Clean build artifacts to avoid CMake cache conflicts
+            echo "🧹 Cleaning old build artifacts..."
+            rm -rf build install log
+
+            # Ensure src folder exists (ROS2 workspace structure)
             mkdir -p src
 
+            # Source ROS2 environment
+            source /opt/ros/humble/setup.bash
+
+            # Install Python dependencies
+            echo "📦 Installing Python dependencies..."
+            pip install -r requirements.txt || echo "⚠️  No requirements.txt or install failed"
+
             # Build ROS2 workspace
+            echo "🔨 Building ROS2 workspace..."
             colcon build
 
-            echo "Deployment complete!"
+            echo "✅ Deployment complete!"
           EOF
