@@ -92,6 +92,13 @@ install(PROGRAMS
   RENAME pick_demo
 )
 
+# Install RGB LED tester script
+install(PROGRAMS
+  scripts/rgb_light.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME rgb_light
+)
+
 # Make controller executable
 install(PROGRAMS
   controllers/robot_controller/robot_controller
