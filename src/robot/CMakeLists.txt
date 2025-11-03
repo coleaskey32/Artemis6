@@ -92,12 +92,21 @@ install(PROGRAMS
   RENAME pick_demo
 )
 
-# Install RGB LED tester script
+# ------------------------------------------------------------
+# Install led status script
 install(PROGRAMS
-  scripts/rgb_light.py
+  scripts/radar_project/led_status.py
   DESTINATION lib/${PROJECT_NAME}
-  RENAME rgb_light
+  RENAME led_status
 )
+
+# Install lidar monitor script
+install(PROGRAMS
+  scripts/radar_project/lidar_monitor.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME lidar_monitor
+)
+# ------------------------------------------------------------
 
 # Make controller executable
 install(PROGRAMS
