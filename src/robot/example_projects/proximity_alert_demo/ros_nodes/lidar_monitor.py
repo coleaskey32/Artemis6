@@ -18,6 +18,9 @@ class LidarMonitor(Node):
             10
         )
 
+        # Track the last status to only publish on changes
+        self.last_safety_status = None
+
         # Initialize serial connection to Arduino
         try:
             self.serial_port = serial.Serial(
@@ -58,10 +61,13 @@ class LidarMonitor(Node):
                             else:
                                 safety_status = 'safe'
                             
-                            # Publish the distance data
-                            msg = String()
-                            msg.data = safety_status
-                            self.lidar_publisher.publish(msg)
+                            # Only publish when status changes
+                            if safety_status != self.last_safety_status:
+                                self.get_logger().warn(f'⚠ Status changed: {self.last_safety_status} -> {safety_status}')
+                                msg = String()
+                                msg.data = safety_status
+                                self.lidar_publisher.publish(msg)
+                                self.last_safety_status = safety_status
                             
                         except (ValueError, IndexError) as e:
                             self.get_logger().warn(f'Failed to parse distance: {line} - {e}')

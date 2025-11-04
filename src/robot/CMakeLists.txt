@@ -20,6 +20,10 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+# ============================================================================
+# CONFIGURATION AND RESOURCE FILES
+# ============================================================================
+
 # Install launch files and config
 install(DIRECTORY
   launch
@@ -36,61 +40,88 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
-# Install ROS2 base controller script
+# ============================================================================
+# REAL ROBOT NODES (Hardware/Production)
+# ============================================================================
+
+# Base controller - main robot drive controller
 install(PROGRAMS
   ros_nodes/base_controller.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME base_controller
 )
 
-# Install square drive script
-install(PROGRAMS
-  ros_nodes/square_drive.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME square_drive
-)
-
-# Install arm controller script
+# Arm controller - robot arm control
 install(PROGRAMS
   ros_nodes/arm_controller.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME arm_controller
 )
 
-# Install pose controller script
+# Pose controller - robot positioning
 install(PROGRAMS
   ros_nodes/pose_controller.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME pose_controller
 )
 
-# Install joint state publisher script
+# Joint state publisher - robot joint states
 install(PROGRAMS
   ros_nodes/joint_state_publisher.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME joint_state_publisher
 )
 
-# Install arm teleoperation script
+# Arm teleoperation - manual arm control
 install(PROGRAMS
   ros_nodes/arm_teleop.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME arm_teleop
 )
 
-# Install IK solver script
+# IK solver - inverse kinematics
 install(PROGRAMS
   ros_nodes/ik_solver.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME ik_solver
 )
 
-# Install pick and place demo script
+# ============================================================================
+# EXAMPLE PROJECTS / DEMOS
+# ============================================================================
+
+# --- Square Drive Demo ---
+install(PROGRAMS
+  ros_nodes/square_drive.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME square_drive
+)
+
+# --- Pick and Place Demo ---
 install(PROGRAMS
   ros_nodes/pick_and_place_demo.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME pick_demo
 )
+
+# --- Proximity Alert Demo ---
+# Distance monitor - reads distance sensor and publishes safety status
+install(PROGRAMS
+  example_projects/proximity_alert_demo/ros_nodes/lidar_monitor.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME lidar_monitor
+)
+
+# LED status controller - controls LEDs based on safety status
+install(PROGRAMS
+  example_projects/proximity_alert_demo/ros_nodes/led_status.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME led_status
+)
+
+# ============================================================================
+# WEBOTS CONTROLLER EXECUTABLES
+# ============================================================================
 
 # Make controller executable
 install(PROGRAMS
