@@ -38,75 +38,59 @@ install(DIRECTORY
 
 # Install ROS2 base controller script
 install(PROGRAMS
-  scripts/base_controller.py
+  ros_nodes/base_controller.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME base_controller
 )
 
 # Install square drive script
 install(PROGRAMS
-  scripts/square_drive.py
+  ros_nodes/square_drive.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME square_drive
 )
 
 # Install arm controller script
 install(PROGRAMS
-  scripts/arm_controller.py
+  ros_nodes/arm_controller.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME arm_controller
 )
 
 # Install pose controller script
 install(PROGRAMS
-  scripts/pose_controller.py
+  ros_nodes/pose_controller.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME pose_controller
 )
 
 # Install joint state publisher script
 install(PROGRAMS
-  scripts/joint_state_publisher.py
+  ros_nodes/joint_state_publisher.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME joint_state_publisher
 )
 
 # Install arm teleoperation script
 install(PROGRAMS
-  scripts/arm_teleop.py
+  ros_nodes/arm_teleop.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME arm_teleop
 )
 
 # Install IK solver script
 install(PROGRAMS
-  scripts/ik_solver.py
+  ros_nodes/ik_solver.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME ik_solver
 )
 
 # Install pick and place demo script
 install(PROGRAMS
-  scripts/pick_and_place_demo.py
+  ros_nodes/pick_and_place_demo.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME pick_demo
 )
-
-# ------------------------------------------------------------
-# Install led status script
-install(PROGRAMS
-  scripts/radar_project/led_status.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME led_status
-)
-
-# Install lidar monitor script
-install(PROGRAMS
-  scripts/radar_project/lidar_monitor.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME lidar_monitor
-)
-# ------------------------------------------------------------
 
 # Make controller executable
 install(PROGRAMS
