@@ -1,0 +1,230 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "../protos/MobileManipulator.proto"
+
+WorldInfo {
+  info [
+    "Mobile Manipulator Robot"
+    "5-DOF Arm with Prismatic Gripper"
+    "4-Wheel Mobile Base"
+  ]
+  title "Mobile Manipulator Simulation"
+  basicTimeStep 4
+  FPS 120
+  optimalThreadCount 4
+  physicsDisableTime 0.1
+  physicsDisableLinearThreshold 0.01
+  physicsDisableAngularThreshold 0.01
+  defaultDamping Damping {
+    linear 0.1
+    angular 0.1
+  }
+  contactProperties [
+    ContactProperties {
+      material1 "wheel"
+      coulombFriction [
+        1.0
+      ]
+      softCFM 0.0001
+      softERP 0.9
+    }
+    ContactProperties {
+      material1 "gripper"
+      coulombFriction [
+        1.5
+      ]
+      softCFM 0.0001
+    }
+    ContactProperties {
+      coulombFriction [
+        0.8
+      ]
+      bounce 0.1
+      softCFM 0.0001
+      softERP 0.9
+    }
+  ]
+}
+
+Viewpoint {
+  orientation -0.2795 0.3134 0.9078 1.5708
+  position -0.5 -1.2 0.8
+  follow "MobileManipulator"
+  followType "Mounted Shot"
+}
+
+TexturedBackground {
+}
+
+TexturedBackgroundLight {
+}
+
+RectangleArena {
+  floorSize 5 5
+  floorTileSize 1 1
+}
+
+DEF MOBILE_MANIPULATOR MobileManipulator {
+  translation 0 0 0.11
+  controller "robot_controller"
+  supervisor FALSE
+  selfCollision TRUE
+}
+
+# ============================================
+# COORDINATE REFERENCE MARKERS
+# ============================================
+# Origin marker (0, 0, 0)
+Solid {
+  translation 0 0 0.01
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 1 1
+        metalness 0
+        roughness 0.3
+      }
+      geometry Cylinder {
+        height 0.02
+        radius 0.03
+      }
+    }
+  ]
+  name "origin_marker"
+}
+
+# X-axis marker (red pole at x=0.5)
+Solid {
+  translation 0.5 0 0.15
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+        metalness 0
+        emissiveColor 0.3 0 0
+      }
+      geometry Cylinder {
+        height 0.3
+        radius 0.01
+      }
+    }
+  ]
+  name "x_axis_marker"
+}
+
+# Y-axis marker (green pole at y=0.5)
+Solid {
+  translation 0 0.5 0.15
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+        metalness 0
+        emissiveColor 0 0.3 0
+      }
+      geometry Cylinder {
+        height 0.3
+        radius 0.01
+      }
+    }
+  ]
+  name "y_axis_marker"
+}
+
+# TARGET SPHERE - Move this to visualize arm targets!
+# Click on it in Webots and drag to set target position
+Solid {
+  translation 0.3 0 0.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0.5 0
+        metalness 0.8
+        roughness 0.2
+        emissiveColor 0.2 0.1 0
+      }
+      geometry Sphere {
+        radius 0.03
+      }
+    }
+  ]
+  name "TARGET_SPHERE"
+}
+
+# ============================================
+# OBJECTS TO INTERACT WITH
+# ============================================
+Solid {
+  translation 0.5 0 0.05
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+        metalness 0
+        roughness 0.5
+      }
+      geometry Box {
+        size 0.05 0.05 0.05
+      }
+    }
+  ]
+  name "red_box"
+  boundingObject Box {
+    size 0.05 0.05 0.05
+  }
+  physics Physics {
+    mass 0.5
+  }
+}
+
+Solid {
+  translation -0.5 0.3 0.03
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 1 0
+        metalness 0
+        roughness 0.5
+      }
+      geometry Cylinder {
+        height 0.06
+        radius 0.05
+      }
+    }
+  ]
+  name "green_cylinder"
+  boundingObject Cylinder {
+    height 0.06
+    radius 0.05
+  }
+  physics Physics {
+    mass 0.3
+  }
+}
+
+Solid {
+  translation 0.3 -0.4 0.025
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0 0 1
+        metalness 0
+        roughness 0.5
+      }
+      geometry Sphere {
+        radius 0.05
+      }
+    }
+  ]
+  name "blue_sphere"
+  boundingObject Sphere {
+    radius 0.05
+  }
+  physics Physics {
+    mass 0.2
+  }
+}
+

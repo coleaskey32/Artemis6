@@ -94,6 +94,7 @@ class BaseController(Node):
 
 def main(args=None):
     rclpy.init(args=args)
+    controller = None
     
     try:
         controller = BaseController()
@@ -103,8 +104,9 @@ def main(args=None):
     except Exception as e:
         print(f'❌ Error: {e}')
     finally:
-        if rclpy.ok():
+        if controller is not None:
             controller.destroy_node()
+        if rclpy.ok():
             rclpy.shutdown()
 
 if __name__ == '__main__':

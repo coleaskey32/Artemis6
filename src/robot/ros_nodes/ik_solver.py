@@ -1,153 +1,203 @@
 #!/usr/bin/env python3
 """
-IK Solver Node - Inverse Kinematics for the 6-axis arm
+IK Solver Node - Inverse Kinematics for 5-DOF Arm
 Subscribes to target gripper poses and publishes joint commands
+
+Arm Configuration (from URDF):
+  Joint 1: base_yaw     - Z rotation (±3.14 rad)
+  Joint 2: shoulder     - Y rotation (±1.57 rad)  
+  Joint 3: elbow        - Y rotation (0 to 1.57 rad)
+  Joint 4: wrist_pitch  - Y rotation (±1.57 rad)
+  Joint 5: wrist_roll   - Z rotation (±3.14 rad)
 """
 
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Pose, PoseStamped
+from geometry_msgs.msg import Point
 from sensor_msgs.msg import JointState
+from std_msgs.msg import Empty
 import numpy as np
 from ikpy.chain import Chain
 from ikpy.link import OriginLink, URDFLink
-import ikpy.utils.plot as plot_utils
 
 class IKSolver(Node):
     def __init__(self):
         super().__init__('ik_solver')
         
-        # Create kinematic chain based on our robot arm
-        # Link lengths from robot.wbt
+        # Create kinematic chain matching URDF dimensions
         self.chain = Chain(name='robot_arm', links=[
-            OriginLink(),  # Base (fixed)
+            OriginLink(),
             URDFLink(
-                name="shoulder_pan",
-                origin_translation=[0, 0, 0.06],  # Base height
+                name="base",
+                origin_translation=[0, 0, 0.10],
                 origin_orientation=[0, 0, 0],
-                rotation=[0, 0, 1],  # Rotation around Z
-                bounds=(-6.28, 6.28)
+                rotation=[0, 0, 1],
+                bounds=(-3.14159, 3.14159)
             ),
             URDFLink(
-                name="shoulder_lift",
-                origin_translation=[0, 0, 0.06],  # Shoulder offset
+                name="shoulder",
+                origin_translation=[0, 0, 0.18],
                 origin_orientation=[0, 0, 0],
-                rotation=[0, 1, 0],  # Rotation around Y
-                bounds=(-3.14, 3.14)
+                rotation=[0, 1, 0],
+                bounds=(-1.5708, 1.5708)
             ),
             URDFLink(
                 name="elbow",
-                origin_translation=[0, 0, 0.375],  # Upper arm length
+                origin_translation=[0, 0, 0.20],
                 origin_orientation=[0, 0, 0],
-                rotation=[0, 1, 0],  # Rotation around Y
-                bounds=(-3.14, 3.14)
+                rotation=[0, 1, 0],
+                bounds=(0.0, 1.5708)
             ),
             URDFLink(
-                name="wrist_1",
-                origin_translation=[0, 0, 0.285],  # Forearm length
+                name="wrist_pitch",
+                origin_translation=[0, 0, 0.15],
                 origin_orientation=[0, 0, 0],
-                rotation=[0, 0, 1],  # Rotation around Z
-                bounds=(-6.28, 6.28)
+                rotation=[0, 1, 0],
+                bounds=(-1.5708, 1.5708)
             ),
             URDFLink(
-                name="wrist_2",
-                origin_translation=[0, 0, 0.05],  # Wrist 1 offset
+                name="wrist_roll",
+                origin_translation=[0, 0, 0.1775],
                 origin_orientation=[0, 0, 0],
-                rotation=[0, 1, 0],  # Rotation around Y
-                bounds=(-6.28, 6.28)
+                rotation=[0, 0, 1],
+                bounds=(-3.14159, 3.14159)
             ),
             URDFLink(
-                name="wrist_3",
-                origin_translation=[0, 0, 0.02],  # Wrist 2 offset
+                name="gripper",
+                origin_translation=[0, 0, 0.11],
                 origin_orientation=[0, 0, 0],
-                rotation=[0, 0, 1],  # Rotation around Z
-                bounds=(-6.28, 6.28)
+                rotation=[0, 0, 0],
             ),
         ])
         
-        # Subscriber for target poses
+        # Subscribers
         self.subscription = self.create_subscription(
-            PoseStamped,
-            '/gripper_target_pose',
-            self.pose_callback,
-            10
-        )
+            Point, '/arm_coordinates', self.target_callback, 10)
+        self.home_subscription = self.create_subscription(
+            Empty, '/arm_home', self.home_callback, 10)
         
-        # Publisher for joint commands
-        self.publisher = self.create_publisher(
-            JointState,
-            '/arm_joint_commands',
-            10
-        )
+        # Publisher for joint commands (5 DOF)
+        self.joint_publisher = self.create_publisher(JointState, '/arm_joint_commands', 10)
         
-        # Current joint state (start at home)
-        self.current_joints = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])  # 7 values (includes base origin)
+        # HOME position - safe upright pose [base_yaw, shoulder, elbow, wrist_pitch, wrist_roll]
+        self.HOME_JOINTS = [0.0, 0.785, 0.785, 0.0, 0.0]
+        
+        # Current joint state (IKPy needs 7 values: origin + 5 joints + end effector)
+        self.current_joints = np.zeros(7)
+        
+        # Pending target for delayed execution
+        self.pending_target = None
+        self.delay_timer = None
+        
+        # Time to wait at home before moving to target (seconds)
+        self.home_delay = 1.5
+        
+        # Workspace bounds
+        self.max_reach = 0.10 + 0.18 + 0.20 + 0.15 + 0.1775 + 0.11
+        self.min_reach = 0.15
         
         self.get_logger().info("🧮 IK Solver Started!")
-        self.get_logger().info("📡 Listening to /gripper_target_pose")
-        self.get_logger().info("📤 Publishing to /arm_joint_commands")
+        self.get_logger().info(f"📏 Arm reach: {self.min_reach:.2f}m to {self.max_reach:.2f}m")
+        self.get_logger().info(f"🏠 Home-first enabled (delay: {self.home_delay}s)")
         self.get_logger().info("")
-        self.get_logger().info("🎯 Test with:")
-        self.get_logger().info('  ros2 topic pub /gripper_target_pose geometry_msgs/msg/PoseStamped \\')
-        self.get_logger().info('    "{pose: {position: {x: 0.3, y: 0.0, z: 0.3}}}"')
+        self.get_logger().info("📡 Topics:")
+        self.get_logger().info("   /arm_coordinates (Point) - Move to XYZ")
+        self.get_logger().info("   /arm_home (Empty) - Go to home position")
+        self.get_logger().info("")
+        self.get_logger().info("🎯 Test:")
+        self.get_logger().info('  ros2 topic pub -1 /gripper_target geometry_msgs/msg/Point "{x: 0.3, y: 0.0, z: 0.4}"')
+    
+    def publish_joints(self, joint_positions):
+        """Publish joint positions to arm controller."""
+        joint_msg = JointState()
+        joint_msg.header.stamp = self.get_clock().now().to_msg()
+        joint_msg.name = ['base_yaw', 'shoulder', 'elbow', 'wrist_pitch', 'wrist_roll']
+        joint_msg.position = joint_positions
+        self.joint_publisher.publish(joint_msg)
+    
+    def go_home(self):
+        """Send arm to home position."""
+        self.get_logger().info(f"🏠 Going HOME: {self.HOME_JOINTS}")
+        self.publish_joints(self.HOME_JOINTS)
+        # Update IKPy's current state
+        self.current_joints = np.array([0] + self.HOME_JOINTS + [0])
+    
+    def home_callback(self, msg):
+        """Handle manual home command."""
+        self.go_home()
+    
+    def target_callback(self, msg):
+        """Handle target position - goes home first, then to target."""
+        self.get_logger().info(f"🎯 New target: x={msg.x:.3f}, y={msg.y:.3f}, z={msg.z:.3f}")
         
-    def pose_callback(self, msg):
-        """Solve IK for target pose and publish joint commands"""
-        # Extract target position
-        target_position = [
-            msg.pose.position.x,
-            msg.pose.position.y,
-            msg.pose.position.z
-        ]
+        # Cancel any pending motion
+        if self.delay_timer:
+            self.delay_timer.cancel()
+            self.delay_timer = None
         
-        # Extract target orientation (quaternion)
-        target_orientation = [
-            msg.pose.orientation.x,
-            msg.pose.orientation.y,
-            msg.pose.orientation.z,
-            msg.pose.orientation.w
-        ]
+        # Step 1: Go to HOME first
+        self.go_home()
         
-        self.get_logger().info(f"🎯 Target: x={target_position[0]:.3f}, y={target_position[1]:.3f}, z={target_position[2]:.3f}")
+        # Step 2: Store target and wait for arm to reach home
+        self.pending_target = np.array([msg.x, msg.y, msg.z])
+        self.delay_timer = self.create_timer(self.home_delay, self.execute_pending_target)
+    
+    def execute_pending_target(self):
+        """Called after delay - solve IK and move to target."""
+        # Cancel the timer (one-shot)
+        if self.delay_timer:
+            self.delay_timer.cancel()
+            self.delay_timer = None
+        
+        if self.pending_target is None:
+            return
+        
+        target = self.pending_target
+        self.pending_target = None
+        
+        self.get_logger().info(f"🎯 Moving to target: x={target[0]:.3f}, y={target[1]:.3f}, z={target[2]:.3f}")
+        
+        # Check reachability
+        distance = np.linalg.norm(target)
+        if distance > self.max_reach:
+            self.get_logger().warn(f"⚠️  Target may be out of reach ({distance:.2f}m > {self.max_reach:.2f}m)")
         
         try:
-            # Build target transformation matrix
-            target_frame = np.eye(4)
-            target_frame[:3, 3] = np.array(target_position)
+            # Use home position as initial guess (we're starting from home)
+            initial_guess = np.array([0] + self.HOME_JOINTS + [0])
             
-            # Solve IK using inverse_kinematics_frame method
-            joint_angles = self.chain.inverse_kinematics_frame(
-                target=target_frame
+            # Solve IK
+            joint_angles = self.chain.inverse_kinematics(
+                target_position=target,
+                initial_position=initial_guess
             )
             
             # Update current state
             self.current_joints = joint_angles
             
-            # Extract joint values (skip first element which is the base origin)
-            arm_joints = joint_angles[1:7]  # Joints 1-6
+            # Extract 5 joint values (skip origin [0] and end effector [6])
+            arm_joints = joint_angles[1:6].tolist()
             
-            # Publish joint commands
-            joint_msg = JointState()
-            joint_msg.position = arm_joints.tolist()
-            self.publisher.publish(joint_msg)
+            # Publish to arm
+            self.publish_joints(arm_joints)
             
-            # Log the solution
+            # Log solution
             joint_str = ', '.join([f'{j:.3f}' for j in arm_joints])
             self.get_logger().info(f"✅ Solution: [{joint_str}]")
             
-            # Calculate and show forward kinematics (verification)
+            # Verify with forward kinematics
             fk_frame = self.chain.forward_kinematics(joint_angles)
-            fk_position = fk_frame[:3, 3]
-            error = np.linalg.norm(fk_position - target_position)
-            self.get_logger().info(f"📍 Achieved: x={fk_position[0]:.3f}, y={fk_position[1]:.3f}, z={fk_position[2]:.3f}")
-            self.get_logger().info(f"📏 Error: {error*1000:.2f}mm")
+            achieved = fk_frame[:3, 3]
+            error = np.linalg.norm(achieved - target)
+            
+            self.get_logger().info(f"📍 Achieved: x={achieved[0]:.3f}, y={achieved[1]:.3f}, z={achieved[2]:.3f}")
+            self.get_logger().info(f"📏 Error: {error*1000:.1f}mm")
             
         except Exception as e:
             self.get_logger().error(f"❌ IK failed: {e}")
 
 def main(args=None):
     rclpy.init(args=args)
-    
     solver = IKSolver()
     
     try:
@@ -160,4 +210,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-

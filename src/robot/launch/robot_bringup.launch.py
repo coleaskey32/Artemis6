@@ -20,8 +20,14 @@ def generate_launch_description():
     
     start_arm_arg = DeclareLaunchArgument(
         'start_arm',
-        default_value='false',
+        default_value='true',
         description='Start the arm controller node'
+    )
+    
+    start_teleop_arg = DeclareLaunchArgument(
+        'start_teleop',
+        default_value='false',  # Disabled by default - use start_teleop.sh instead
+        description='Start the keyboard teleop node'
     )
     
     start_square_arg = DeclareLaunchArgument(
@@ -33,6 +39,7 @@ def generate_launch_description():
     # Get launch configuration
     start_base = LaunchConfiguration('start_base')
     start_arm = LaunchConfiguration('start_arm')
+    start_teleop = LaunchConfiguration('start_teleop')
     start_square = LaunchConfiguration('start_square')
     
     # Base Controller Node
@@ -47,7 +54,7 @@ def generate_launch_description():
         respawn_delay=2.0
     )
     
-    # Arm Controller Node (optional)
+    # Arm Controller Node
     arm_node = Node(
         package='robot',
         executable='arm_controller',
@@ -57,6 +64,18 @@ def generate_launch_description():
         parameters=[],
         respawn=True,
         respawn_delay=2.0
+    )
+    
+    # Keyboard Teleop Node
+    # Note: keyboard_control needs direct terminal access for input
+    # If using the launch file, teleop is disabled by default
+    # Use start_teleop.sh script instead for full teleop experience
+    teleop_node = Node(
+        package='robot',
+        executable='keyboard_control',
+        name='keyboard_control',
+        output='screen',
+        condition=IfCondition(start_teleop),
     )
     
     # Square Drive Demo Node (optional)
@@ -71,9 +90,10 @@ def generate_launch_description():
     return LaunchDescription([
         start_base_arg,
         start_arm_arg,
+        start_teleop_arg,
         start_square_arg,
         base_node,
         arm_node,
+        teleop_node,
         square_node,
     ])
-

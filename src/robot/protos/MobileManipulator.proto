@@ -1,0 +1,816 @@
+#VRML_SIM R2025a utf8
+# license: Apache License 2.0
+# license url: http://www.apache.org/licenses/LICENSE-2.0
+# This is a proto file for Webots for the MobileManipulator
+# Extracted from: /Users/coleaskey/Artemis6/src/robot/urdf/robot.urdf
+
+PROTO MobileManipulator [
+  field  SFVec3f     translation     0 0 0
+  field  SFRotation  rotation        0 0 1 0
+  field  SFString    name            "MobileManipulator"  # Is `Robot.name`.
+  field  SFString    controller      "void"               # Is `Robot.controller`.
+  field  MFString    controllerArgs  []                   # Is `Robot.controllerArgs`.
+  field  SFString    customData      ""                   # Is `Robot.customData`.
+  field  SFBool      supervisor      FALSE                # Is `Robot.supervisor`.
+  field  SFBool      synchronization TRUE                 # Is `Robot.synchronization`.
+  field  SFBool      selfCollision   FALSE                # Is `Robot.selfCollision`.
+]
+{
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    controllerArgs IS controllerArgs
+    customData IS customData
+    supervisor IS supervisor
+    synchronization IS synchronization
+    selfCollision IS selfCollision
+    children [
+      Shape {
+        appearance DEF blue PBRAppearance {
+          baseColor 0.200000 0.400000 0.800000
+          roughness 1.000000
+          metalness 0
+        }
+        geometry Box {
+           size 0.400000 0.300000 0.100000
+        }
+      }
+      Pose {
+        translation 0.000000 0.000000 0.075000
+        children [
+          Shape {
+            appearance DEF dark_gray PBRAppearance {
+              baseColor 0.150000 0.150000 0.200000
+              roughness 1.000000
+              metalness 0
+            }
+            geometry Cylinder {
+              radius 0.075
+              height 0.05
+            }
+          }
+        ]
+      }
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0.000000 1.000000 -0.000004
+          anchor 0.150000 0.180000 -0.050000
+        }
+        device [
+          RotationalMotor {
+            name "front_left_wheel_joint"
+            maxTorque 10000
+          }
+          PositionSensor {
+            name "front_left_wheel_joint_sensor"
+          }
+        ]
+        endPoint Solid {
+          translation 0.150000 0.180000 -0.050000
+          rotation -1.000000 0.000000 0.000000 1.570800
+          children [
+            Shape {
+              appearance DEF wheel_black PBRAppearance {
+                baseColor 0.100000 0.100000 0.100000
+                roughness 1.000000
+                metalness 0
+              }
+              geometry Cylinder {
+                radius 0.06
+                height 0.04
+              }
+            }
+          ]
+          name "front_left_wheel"
+          boundingObject Cylinder {
+            radius 0.06
+            height 0.04
+          }
+          physics Physics {
+            density -1
+            mass 0.500000
+            centerOfMass [ 0.000000 0.000000 0.000000 ]
+            inertiaMatrix [
+              1.000000e-03 1.000000e-03 1.000000e-03
+              0.000000e+00 0.000000e+00 0.000000e+00
+            ]
+          }
+        }
+      }
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0.000000 1.000000 -0.000004
+          anchor 0.150000 -0.180000 -0.050000
+        }
+        device [
+          RotationalMotor {
+            name "front_right_wheel_joint"
+            maxTorque 10000
+          }
+          PositionSensor {
+            name "front_right_wheel_joint_sensor"
+          }
+        ]
+        endPoint Solid {
+          translation 0.150000 -0.180000 -0.050000
+          rotation -1.000000 0.000000 0.000000 1.570800
+          children [
+            Shape {
+              appearance USE wheel_black
+              geometry Cylinder {
+                radius 0.06
+                height 0.04
+              }
+            }
+          ]
+          name "front_right_wheel"
+          boundingObject Cylinder {
+            radius 0.06
+            height 0.04
+          }
+          physics Physics {
+            density -1
+            mass 0.500000
+            centerOfMass [ 0.000000 0.000000 0.000000 ]
+            inertiaMatrix [
+              1.000000e-03 1.000000e-03 1.000000e-03
+              0.000000e+00 0.000000e+00 0.000000e+00
+            ]
+          }
+        }
+      }
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0.000000 1.000000 -0.000004
+          anchor -0.150000 0.180000 -0.050000
+        }
+        device [
+          RotationalMotor {
+            name "back_left_wheel_joint"
+            maxTorque 10000
+          }
+          PositionSensor {
+            name "back_left_wheel_joint_sensor"
+          }
+        ]
+        endPoint Solid {
+          translation -0.150000 0.180000 -0.050000
+          rotation -1.000000 0.000000 0.000000 1.570800
+          children [
+            Shape {
+              appearance USE wheel_black
+              geometry Cylinder {
+                radius 0.06
+                height 0.04
+              }
+            }
+          ]
+          name "back_left_wheel"
+          boundingObject Cylinder {
+            radius 0.06
+            height 0.04
+          }
+          physics Physics {
+            density -1
+            mass 0.500000
+            centerOfMass [ 0.000000 0.000000 0.000000 ]
+            inertiaMatrix [
+              1.000000e-03 1.000000e-03 1.000000e-03
+              0.000000e+00 0.000000e+00 0.000000e+00
+            ]
+          }
+        }
+      }
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0.000000 1.000000 -0.000004
+          anchor -0.150000 -0.180000 -0.050000
+        }
+        device [
+          RotationalMotor {
+            name "back_right_wheel_joint"
+            maxTorque 10000
+          }
+          PositionSensor {
+            name "back_right_wheel_joint_sensor"
+          }
+        ]
+        endPoint Solid {
+          translation -0.150000 -0.180000 -0.050000
+          rotation -1.000000 0.000000 0.000000 1.570800
+          children [
+            Shape {
+              appearance USE wheel_black
+              geometry Cylinder {
+                radius 0.06
+                height 0.04
+              }
+            }
+          ]
+          name "back_right_wheel"
+          boundingObject Cylinder {
+            radius 0.06
+            height 0.04
+          }
+          physics Physics {
+            density -1
+            mass 0.500000
+            centerOfMass [ 0.000000 0.000000 0.000000 ]
+            inertiaMatrix [
+              1.000000e-03 1.000000e-03 1.000000e-03
+              0.000000e+00 0.000000e+00 0.000000e+00
+            ]
+          }
+        }
+      }
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0.000000 0.000000 1.000000
+          anchor 0.000000 0.000000 0.100000
+        }
+        device [
+          RotationalMotor {
+            name "base_yaw_joint"
+            maxVelocity 1.0
+            minPosition -3.14
+            maxPosition 3.14
+            maxTorque 5.0
+          }
+          PositionSensor {
+            name "base_yaw_joint_sensor"
+          }
+        ]
+        endPoint Solid {
+          translation 0.000000 0.000000 0.100000
+          children [
+            Pose {
+              translation 0.000000 0.000000 0.090000
+              children [
+                Shape {
+                  appearance DEF arm_gray PBRAppearance {
+                    baseColor 0.500000 0.500000 0.550000
+                    roughness 1.000000
+                    metalness 0
+                  }
+                  geometry Box {
+                     size 0.080000 0.080000 0.180000
+                  }
+                }
+              ]
+            }
+            Pose {
+              translation 0.000000 0.000000 0.180000
+              children [
+                Shape {
+                  appearance DEF joint_dark_gray PBRAppearance {
+                    baseColor 0.300000 0.300000 0.350000
+                    roughness 1.000000
+                    metalness 0
+                  }
+                  geometry Cylinder {
+                    radius 0.06
+                    height 0.04
+                  }
+                }
+              ]
+            }
+            Pose {
+              translation 0.000000 0.000000 0.180000
+              rotation 0.000000 1.000000 0.000000 1.570800
+              children [
+                Shape {
+                  appearance DEF joint_metal PBRAppearance {
+                    baseColor 0.700000 0.700000 0.750000
+                    roughness 1.000000
+                    metalness 0
+                  }
+                  geometry Cylinder {
+                    radius 0.025
+                    height 0.1
+                  }
+                }
+              ]
+            }
+            HingeJoint {
+              jointParameters HingeJointParameters {
+                axis 0.000000 1.000000 0.000000
+                anchor 0.000000 0.000000 0.180000
+              }
+              device [
+                RotationalMotor {
+                  name "shoulder_joint"
+                  maxVelocity 1.0
+                  minPosition -1.5708
+                  maxPosition 1.5708
+                  maxTorque 100.0
+                }
+                PositionSensor {
+                  name "shoulder_joint_sensor"
+                }
+              ]
+              endPoint Solid {
+                translation 0.000000 0.000000 0.180000
+                children [
+                  Pose {
+                    translation 0.000000 0.000000 0.100000
+                    children [
+                      Shape {
+                        appearance USE arm_gray
+                        geometry Box {
+                           size 0.070000 0.070000 0.200000
+                        }
+                      }
+                    ]
+                  }
+                  Pose {
+                    translation 0.000000 0.000000 0.200000
+                    children [
+                      Shape {
+                        appearance USE joint_dark_gray
+                        geometry Cylinder {
+                          radius 0.055
+                          height 0.04
+                        }
+                      }
+                    ]
+                  }
+                  Pose {
+                    translation 0.000000 0.000000 0.200000
+                    rotation 0.000000 1.000000 0.000000 1.570800
+                    children [
+                      Shape {
+                        appearance USE joint_metal
+                        geometry Cylinder {
+                          radius 0.022
+                          height 0.09
+                        }
+                      }
+                    ]
+                  }
+                  HingeJoint {
+                    jointParameters HingeJointParameters {
+                      axis 0.000000 1.000000 0.000000
+                      anchor 0.000000 0.000000 0.200000
+                    }
+                    device [
+                      RotationalMotor {
+                        name "elbow_joint"
+                        maxVelocity 1.0
+                        maxPosition 1.5708
+                        maxTorque 100.0
+                      }
+                      PositionSensor {
+                        name "elbow_joint_sensor"
+                      }
+                    ]
+                    endPoint Solid {
+                      translation 0.000000 0.000000 0.200000
+                      children [
+                        Pose {
+                          translation 0.000000 0.000000 0.075000
+                          children [
+                            Shape {
+                              appearance USE arm_gray
+                              geometry Box {
+                                 size 0.065000 0.065000 0.150000
+                              }
+                            }
+                          ]
+                        }
+                        Pose {
+                          translation 0.000000 0.000000 0.150000
+                          children [
+                            Shape {
+                              appearance USE joint_dark_gray
+                              geometry Cylinder {
+                                radius 0.05
+                                height 0.035
+                              }
+                            }
+                          ]
+                        }
+                        Pose {
+                          translation 0.000000 0.000000 0.150000
+                          rotation 0.000000 1.000000 0.000000 1.570800
+                          children [
+                            Shape {
+                              appearance USE joint_metal
+                              geometry Cylinder {
+                                radius 0.02
+                                height 0.08
+                              }
+                            }
+                          ]
+                        }
+                        HingeJoint {
+                          jointParameters HingeJointParameters {
+                            axis 0.000000 1.000000 0.000000
+                            anchor 0.000000 0.000000 0.150000
+                          }
+                          device [
+                            RotationalMotor {
+                              name "wrist_pitch_joint"
+                              maxVelocity 1.0
+                              minPosition -1.5708
+                              maxPosition 1.5708
+                              maxTorque 100.0
+                            }
+                            PositionSensor {
+                              name "wrist_pitch_joint_sensor"
+                            }
+                          ]
+                          endPoint Solid {
+                            translation 0.000000 0.000000 0.150000
+                            children [
+                              Pose {
+                                translation 0.000000 0.000000 0.090000
+                                children [
+                                  Shape {
+                                    appearance USE arm_gray
+                                    geometry Box {
+                                       size 0.055000 0.055000 0.180000
+                                    }
+                                  }
+                                ]
+                              }
+                              Pose {
+                                translation 0.000000 0.000000 0.177500
+                                children [
+                                  Shape {
+                                    appearance USE joint_dark_gray
+                                    geometry Cylinder {
+                                      radius 0.04
+                                      height 0.015
+                                    }
+                                  }
+                                ]
+                              }
+                              HingeJoint {
+                                jointParameters HingeJointParameters {
+                                  axis 0.000000 0.000000 1.000000
+                                  anchor 0.000000 0.000000 0.177500
+                                }
+                                device [
+                                  RotationalMotor {
+                                    name "wrist_roll_joint"
+                                    maxVelocity 1.0
+                                    minPosition -3.14
+                                    maxPosition 3.14
+                                    maxTorque 100.0
+                                  }
+                                  PositionSensor {
+                                    name "wrist_roll_joint_sensor"
+                                  }
+                                ]
+                                endPoint Solid {
+                                  translation 0.000000 0.000000 0.177500
+                                  children [
+                                    Pose {
+                                      translation 0.000000 0.000000 0.007500
+                                      children [
+                                        Shape {
+                                          appearance USE joint_metal
+                                          geometry Cylinder {
+                                            radius 0.035
+                                            height 0.015
+                                          }
+                                        }
+                                      ]
+                                    }
+                                    Pose {
+                                      translation 0.000000 0.000000 0.022500
+                                      children [
+                                        Shape {
+                                          appearance DEF wrist_dark_gray PBRAppearance {
+                                            baseColor 0.350000 0.350000 0.400000
+                                            roughness 1.000000
+                                            metalness 0
+                                          }
+                                          geometry Box {
+                                             size 0.080000 0.060000 0.015000
+                                          }
+                                        }
+                                      ]
+                                    }
+                                    Pose {
+                                      translation 0.000000 0.000000 0.037500
+                                      children [
+                                        Shape {
+                                          appearance USE joint_dark_gray
+                                          geometry Box {
+                                             size 0.050000 0.045000 0.040000
+                                          }
+                                        }
+                                      ]
+                                    }
+                                    SliderJoint {
+                                      jointParameters JointParameters {
+                                        axis 0.000000 1.000000 0.000000
+                                      }
+                                      device [
+                                        LinearMotor {
+                                          name "gripper_joint"
+                                          maxVelocity 0.05
+                                          maxPosition 0.03
+                                          maxForce 10.0
+                                        }
+                                        PositionSensor {
+                                          name "gripper_joint_sensor"
+                                        }
+                                      ]
+                                      endPoint Solid {
+                                        translation 0.000000 0.000000 0.050000
+                                        children [
+                                          Pose {
+                                            translation 0.000000 0.005000 0.025000
+                                            children [
+                                              Shape {
+                                                appearance DEF gripper_dark PBRAppearance {
+                                                  baseColor 0.200000 0.200000 0.250000
+                                                  roughness 1.000000
+                                                  metalness 0
+                                                }
+                                                geometry Box {
+                                                   size 0.012000 0.012000 0.050000
+                                                }
+                                              }
+                                            ]
+                                          }
+                                          Pose {
+                                            translation 0.000000 0.011000 0.053000
+                                            children [
+                                              Shape {
+                                                appearance USE gripper_dark
+                                                geometry Box {
+                                                   size 0.012000 0.010000 0.015000
+                                                }
+                                              }
+                                            ]
+                                          }
+                                          Pose {
+                                            translation 0.001000 0.015500 0.053000
+                                            children [
+                                              Shape {
+                                                appearance DEF gripper_rubber PBRAppearance {
+                                                  baseColor 0.150000 0.150000 0.150000
+                                                  roughness 1.000000
+                                                  metalness 0
+                                                }
+                                                geometry Box {
+                                                   size 0.008000 0.001000 0.012000
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                        name "gripper1_link"
+                                        boundingObject Group {
+                                          children [
+                                            Pose {
+                                              translation 0.000000 0.005000 0.025000
+                                              children [
+                                                Box {
+                                                   size 0.010000 0.010000 0.050000
+                                                }
+                                              ]
+                                            }
+                                            Pose {
+                                              translation 0.000000 0.010000 0.055000
+                                              children [
+                                                Box {
+                                                   size 0.010000 0.010000 0.010000
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                        physics Physics {
+                                          density -1
+                                          mass 0.100000
+                                          centerOfMass [ 0.000000 0.005000 0.025000 ]
+                                          inertiaMatrix [
+                                            1.000000e-04 1.000000e-04 1.000000e-04
+                                            0.000000e+00 0.000000e+00 0.000000e+00
+                                          ]
+                                        }
+                                      }
+                                    }
+                                    SliderJoint {
+                                      jointParameters JointParameters {
+                                        axis 0.000000 -1.000000 0.000000
+                                      }
+                                      device [
+                                        LinearMotor {
+                                          name "gripper2_joint"
+                                          maxVelocity 0.05
+                                          maxPosition 0.03
+                                          maxForce 10.0
+                                        }
+                                        PositionSensor {
+                                          name "gripper2_joint_sensor"
+                                        }
+                                      ]
+                                      endPoint Solid {
+                                        translation 0.000000 0.000000 0.050000
+                                        children [
+                                          Pose {
+                                            translation 0.000000 -0.005000 0.025000
+                                            children [
+                                              Shape {
+                                                appearance USE gripper_dark
+                                                geometry Box {
+                                                   size 0.012000 0.012000 0.050000
+                                                }
+                                              }
+                                            ]
+                                          }
+                                          Pose {
+                                            translation 0.000000 -0.011000 0.053000
+                                            children [
+                                              Shape {
+                                                appearance USE gripper_dark
+                                                geometry Box {
+                                                   size 0.012000 0.010000 0.015000
+                                                }
+                                              }
+                                            ]
+                                          }
+                                          Pose {
+                                            translation 0.001000 -0.015500 0.053000
+                                            children [
+                                              Shape {
+                                                appearance USE gripper_rubber
+                                                geometry Box {
+                                                   size 0.008000 0.001000 0.012000
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                        name "gripper2_link"
+                                        boundingObject Group {
+                                          children [
+                                            Pose {
+                                              translation 0.000000 -0.005000 0.025000
+                                              children [
+                                                Box {
+                                                   size 0.010000 0.010000 0.050000
+                                                }
+                                              ]
+                                            }
+                                            Pose {
+                                              translation 0.000000 -0.010000 0.055000
+                                              children [
+                                                Box {
+                                                   size 0.010000 0.010000 0.010000
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                        physics Physics {
+                                          density -1
+                                          mass 0.100000
+                                          centerOfMass [ 0.000000 -0.005000 0.025000 ]
+                                          inertiaMatrix [
+                                            1.000000e-04 1.000000e-04 1.000000e-04
+                                            0.000000e+00 0.000000e+00 0.000000e+00
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                  name "wrist_roll_link"
+                                  boundingObject Pose {
+                                    translation 0.000000 0.000000 0.030000
+                                    children [
+                                      Box {
+                                         size 0.080000 0.060000 0.060000
+                                      }
+                                    ]
+                                  }
+                                  physics Physics {
+                                    density -1
+                                    mass 0.400000
+                                    centerOfMass [ 0.000000 0.000000 0.030000 ]
+                                    inertiaMatrix [
+                                      8.000000e-04 8.000000e-04 6.000000e-04
+                                      0.000000e+00 0.000000e+00 0.000000e+00
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                            name "wrist_pitch_link"
+                            boundingObject Pose {
+                              translation 0.000000 0.000000 0.090000
+                              children [
+                                Box {
+                                   size 0.060000 0.060000 0.180000
+                                }
+                              ]
+                            }
+                            physics Physics {
+                              density -1
+                              mass 0.800000
+                              centerOfMass [ 0.000000 0.000000 0.090000 ]
+                              inertiaMatrix [
+                                8.000000e-03 8.000000e-03 3.000000e-03
+                                0.000000e+00 0.000000e+00 0.000000e+00
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                      name "forearm_link"
+                      boundingObject Pose {
+                        translation 0.000000 0.000000 0.075000
+                        children [
+                          Box {
+                             size 0.070000 0.070000 0.150000
+                          }
+                        ]
+                      }
+                      physics Physics {
+                        density -1
+                        mass 1.500000
+                        centerOfMass [ 0.000000 0.000000 0.075000 ]
+                        inertiaMatrix [
+                          1.500000e-02 1.500000e-02 8.000000e-03
+                          0.000000e+00 0.000000e+00 0.000000e+00
+                        ]
+                      }
+                    }
+                  }
+                ]
+                name "upper_arm_link"
+                boundingObject Pose {
+                  translation 0.000000 0.000000 0.100000
+                  children [
+                    Box {
+                       size 0.080000 0.080000 0.200000
+                    }
+                  ]
+                }
+                physics Physics {
+                  density -1
+                  mass 1.800000
+                  centerOfMass [ 0.000000 0.000000 0.100000 ]
+                  inertiaMatrix [
+                    2.000000e-02 2.000000e-02 1.000000e-02
+                    0.000000e+00 0.000000e+00 0.000000e+00
+                  ]
+                }
+              }
+            }
+          ]
+          name "base_rotator_link"
+          boundingObject Pose {
+            translation 0.000000 0.000000 0.090000
+            children [
+              Box {
+                 size 0.100000 0.100000 0.180000
+              }
+            ]
+          }
+          physics Physics {
+            density -1
+            mass 1.800000
+            centerOfMass [ 0.000000 0.000000 0.090000 ]
+            inertiaMatrix [
+              2.000000e-02 2.000000e-02 1.000000e-02
+              0.000000e+00 0.000000e+00 0.000000e+00
+            ]
+          }
+        }
+      }
+    ]
+    name IS name
+    boundingObject Group {
+      children [
+        Box {
+           size 0.400000 0.300000 0.100000
+        }
+        Pose {
+          translation 0.000000 0.000000 0.075000
+          children [
+            Cylinder {
+              radius 0.075
+              height 0.05
+            }
+          ]
+        }
+      ]
+    }
+    physics Physics {
+      density -1
+      mass 6.500000
+      centerOfMass [ 0.000000 0.000000 0.050000 ]
+      inertiaMatrix [
+        1.500000e-01 1.500000e-01 1.500000e-01
+        0.000000e+00 0.000000e+00 0.000000e+00
+      ]
+    }
+  }
+}

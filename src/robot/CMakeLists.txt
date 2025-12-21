@@ -29,6 +29,7 @@ install(DIRECTORY
   launch
   config
   DESTINATION share/${PROJECT_NAME}/
+  USE_SOURCE_PERMISSIONS  # Preserve executable permissions for scripts
 )
 
 # Install Webots worlds, URDF, PROTO, and controllers
@@ -58,32 +59,32 @@ install(PROGRAMS
   RENAME arm_controller
 )
 
-# Pose controller - robot positioning
-install(PROGRAMS
-  ros_nodes/pose_controller.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME pose_controller
-)
-
-# Joint state publisher - robot joint states
-install(PROGRAMS
-  ros_nodes/joint_state_publisher.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME joint_state_publisher
-)
-
-# Arm teleoperation - manual arm control
-install(PROGRAMS
-  ros_nodes/arm_teleop.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME arm_teleop
-)
-
 # IK solver - inverse kinematics
 install(PROGRAMS
   ros_nodes/ik_solver.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME ik_solver
+)
+
+# Keyboard teleop - manual robot control
+install(PROGRAMS
+  ros_nodes/keyboard_control.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME keyboard_control
+)
+
+# IK test script
+install(PROGRAMS
+  ros_nodes/test_ik.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME test_ik
+)
+
+# Pick and place demo
+install(PROGRAMS
+  ros_nodes/pick_place_demo.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME pick_place_demo
 )
 
 # ============================================================================
@@ -99,7 +100,7 @@ install(PROGRAMS
 
 # --- Pick and Place Demo ---
 install(PROGRAMS
-  ros_nodes/pick_and_place_demo.py
+  example_projects/ros_nodes/pick_and_place_demo.py
   DESTINATION lib/${PROJECT_NAME}
   RENAME pick_demo
 )
